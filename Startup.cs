@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MSIT14306API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +28,14 @@ namespace MSIT14306API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+                services.AddDbContext<NorthwindContext>(options =>
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("NorthwindConnection"));
+                });
+                services.AddControllersWithViews();
 
-            services.AddControllers();
+                services.AddControllers().AddXmlSerializerFormatters(); //提供XML格式
+            //services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MSIT14306API", Version = "v1" });
