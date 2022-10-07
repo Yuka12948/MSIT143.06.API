@@ -28,7 +28,17 @@ namespace MSIT14306API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-                services.AddDbContext<NorthwindContext>(options =>
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    //builder.WithOrigins("http://www.sample.com","https://localhost:44389");
+                    builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod(); ;
+
+                });
+            });
+
+            services.AddDbContext<NorthwindContext>(options =>
                 {
                     options.UseSqlServer(Configuration.GetConnectionString("NorthwindConnection"));
                 });
@@ -53,7 +63,7 @@ namespace MSIT14306API
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors();
             app.UseRouting();
 
             app.UseAuthorization();
